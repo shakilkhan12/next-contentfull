@@ -7,7 +7,7 @@ const client = createClient({
   space: process.env.CONTENTFULL_SPACE_ID,
   accessToken: process.env.CONTENTFULL_ACCESS_TOKEN
 })
-export const getStaticPaths = async () => {
+export async function getStaticPaths() {
      const response = await client.getEntries({content_type: 'recipe'})
      console.log("getStaticPaths: ", response.items)
      const paths = response.items.map(item => (
@@ -15,17 +15,17 @@ export const getStaticPaths = async () => {
      ))
      return {
        paths,
-       fallback: true // fallback: false means if path does not found the show 404 error
+       fallback: false // fallback: false means if path does not found the show 404 error
      }
 }
-export const getStaticProps = async ({params}) => {
+export async function getStaticProps({params}){
      const {items} = await client.getEntries({content_type: 'recipe', 'fields.slug': params.slug})
      console.log("getStaticProps: ", items)
-     if(!items) {
-       return {
-         notFound: true
-       }
-     }
+    //  if(!items) {
+    //    return {
+    //      notFound: true
+    //    }
+    //  }
      return {
        props: {
          recipe: items[0]
@@ -36,9 +36,9 @@ export const getStaticProps = async ({params}) => {
 export default function RecipeDetails({recipe}) {
   const router = useRouter();
   const {featuredImage, title, cookingTime, ingredients, method} = recipe.fields;
-  if (router.isFallback) {
-		return <h1>Loading...</h1>;
-	}
+  // if (router.isFallback) {
+	// 	return <h1>Loading...</h1>;
+	// }
   return (
     <div>
       <div className="banner">
