@@ -2,6 +2,7 @@ import { createClient } from "contentful"
 import Image from "next/image";
 import {useRouter} from "next/router"
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import Skeleton from "../../components/Skeleton";
 
 const client = createClient({
   space: process.env.CONTENTFULL_SPACE_ID,
@@ -15,7 +16,7 @@ export async function getStaticPaths() {
      ))
      return {
        paths,
-       fallback: false // fallback: false means if path does not found the show 404 error
+       fallback: true // fallback: false means if path does not found the show 404 error
      }
 }
 export async function getStaticProps({params}){
@@ -34,7 +35,7 @@ export async function getStaticProps({params}){
      }
 }
 export default function RecipeDetails({recipe}) {
-  const router = useRouter();
+  if(!recipe) return <Skeleton />
   const {featuredImage, title, cookingTime, ingredients, method} = recipe.fields;
   // if (router.isFallback) {
 	// 	return <h1>Loading...</h1>;
