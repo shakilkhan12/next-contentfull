@@ -11,7 +11,7 @@ export const getStaticPaths = async () => {
      const response = await client.getEntries({content_type: 'recipe'})
      console.log("getStaticPaths: ", response.items)
      const paths = response.items.map(item => (
-       {params: {slug: item.fields.slug}}
+       {params: {slug: item?.fields?.slug}}
      ))
      return {
        paths,
