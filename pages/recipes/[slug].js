@@ -9,6 +9,7 @@ const client = createClient({
 })
 export const getStaticPaths = async () => {
      const response = await client.getEntries({content_type: 'recipe'})
+     console.log("getStaticPaths: ", response.items)
      const paths = response.items.map(item => (
        {params: {slug: item.fields.slug}}
      ))
@@ -19,6 +20,7 @@ export const getStaticPaths = async () => {
 }
 export const getStaticProps = async ({params}) => {
      const {items} = await client.getEntries({content_type: 'recipe', 'fields.slug': params.slug})
+     console.log("getStaticProps: ", items)
      if(!items) {
        return {
          notFound: true
