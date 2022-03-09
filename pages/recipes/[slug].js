@@ -1,7 +1,7 @@
 import { createClient } from "contentful"
 import Image from "next/image";
+import {useRouter} from "next/router"
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
-
 
 const client = createClient({
   space: process.env.CONTENTFULL_SPACE_ID,
@@ -14,11 +14,16 @@ export const getStaticPaths = async () => {
      ))
      return {
        paths,
-       fallback: false // fallback: false means if path does not found the show 404 error
+       fallback: true // fallback: false means if path does not found the show 404 error
      }
 }
 export const getStaticProps = async ({params}) => {
      const {items} = await client.getEntries({content_type: 'recipe', 'fields.slug': params.slug})
+     if(!items) {
+       return {
+         notFound: true
+       }
+     }
      return {
        props: {
          recipe: items[0]
@@ -27,8 +32,11 @@ export const getStaticProps = async ({params}) => {
      }
 }
 export default function RecipeDetails({recipe}) {
-  console.log(recipe)
+  const router = useRouter();
   const {featuredImage, title, cookingTime, ingredients, method} = recipe.fields;
+  if (router.isFallback) {
+		return <h1>Loading...</h1>;
+	}
   return (
     <div>
       <div className="banner">
