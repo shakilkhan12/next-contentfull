@@ -22,11 +22,11 @@ export async function getStaticPaths() {
 export async function getStaticProps({params}){
      const {items} = await client.getEntries({content_type: 'recipe', 'fields.slug': params.slug})
      console.log("getStaticProps: ", items)
-    //  if(!items) {
-    //    return {
-    //      notFound: true
-    //    }
-    //  }
+     if(!items.length) {
+       return {
+         notFound: true
+       }
+     }
      return {
        props: {
          recipe: items[0]
